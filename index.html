@@ -1,181 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>For You</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Georgia', serif;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Georgia', serif;
+}
 
-    body {
-      height: 100vh;
-      background: linear-gradient(120deg, #0f0f14, #1a1a22);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      transition: background 1s ease;
-      overflow: hidden;
-    }
+body {
+  height: 100vh;
+  background: #0f0f14;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  overflow: hidden;
+  transition: all 1s ease;
+}
 
-    .container {
-      text-align: center;
-      max-width: 700px;
-      padding: 30px;
-      animation: fadeIn 1.5s ease;
-    }
+.bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(6px) brightness(0.6);
+  z-index: -1;
+  transition: background-image 1s ease;
+}
 
-    h1 {
-      font-weight: 400;
-      font-size: 2.2rem;
-      margin-bottom: 40px;
-      opacity: 0.9;
-    }
+.container {
+  text-align: center;
+  max-width: 90%;
+  width: 420px;
+  padding: 25px;
+  animation: fadeIn 1.5s ease;
+}
 
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-    }
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  opacity: 0.95;
+}
 
-    button {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #fff;
-      padding: 14px 28px;
-      font-size: 1rem;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(6px);
-    }
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
 
-    button:hover {
-      background: rgba(255,255,255,0.18);
-      transform: scale(1.05);
-    }
+button {
+  padding: 16px;
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
 
-    .promise-box {
-      margin-top: 50px;
-      padding: 35px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.15);
-      backdrop-filter: blur(8px);
-      display: none;
-      animation: fadeUp 1s ease forwards;
-    }
+button:active {
+  transform: scale(0.95);
+}
 
-    .promise-box p {
-      font-size: 1.15rem;
-      line-height: 1.8;
-      opacity: 0.95;
-      white-space: pre-line;
-    }
+.promise-box {
+  margin-top: 30px;
+  padding: 25px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  display: none;
+  animation: fadeUp 0.8s ease forwards;
+}
 
-    .final-line {
-      margin-top: 25px;
-      font-size: 0.9rem;
-      opacity: 0.6;
-    }
+.promise-box p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+.emoji {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
+.tap {
+  margin-top: 15px;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.music-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  font-size: 1.2rem;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h1>How are you feeling today?</h1>
+<div class="bg" id="bg"></div>
 
-    <div class="buttons">
-      <button onclick="showPromise('tired')">Tired</button>
-      <button onclick="showPromise('overthinking')">Overthinking</button>
-      <button onclick="showPromise('calm')">Calm</button>
-      <button onclick="showPromise('distant')">Distant</button>
-    </div>
+<button class="music-btn" onclick="toggleMusic()">🎵</button>
 
-    <div class="promise-box" id="promiseBox">
-      <p id="promiseText"></p>
-      <div class="final-line">
-        This isn’t pressure. It’s a promise I’m willing to keep.
-      </div>
-    </div>
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/10/26/audio_87c48c1a7b.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+  <h1>How are you feeling today?</h1>
+
+  <div class="buttons">
+    <button onclick="showPromise('tired')">😔 Tired</button>
+    <button onclick="showPromise('overthinking')">🌀 Overthinking</button>
+    <button onclick="showPromise('calm')">🌿 Calm</button>
+    <button onclick="showPromise('distant')">🖤 Distant</button>
   </div>
 
-  <script>
-    function showPromise(mood) {
-      const box = document.getElementById("promiseBox");
-      const text = document.getElementById("promiseText");
+  <div class="promise-box" id="promiseBox" onclick="pulse()">
+    <div class="emoji" id="emoji"></div>
+    <p id="promiseText"></p>
+    <div class="tap">tap once more 🤍</div>
+  </div>
+</div>
 
-      let promise = "";
-      let bg = "";
+<script>
+const bg = document.getElementById("bg");
+const text = document.getElementById("promiseText");
+const box = document.getElementById("promiseBox");
+const emoji = document.getElementById("emoji");
+const music = document.getElementById("bgMusic");
+let musicOn = false;
 
-      if (mood === "tired") {
-        bg = "linear-gradient(120deg, #2b1d1d, #3a2a2a)";
-        promise = `You don’t need to be strong here.
+function showPromise(mood) {
+  if (navigator.vibrate) navigator.vibrate(20);
+
+  box.style.display = "block";
+
+  if (mood === "tired") {
+    bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee')";
+    emoji.innerText = "😔";
+    text.innerText = `You don’t need to be strong here.
 
 I promise to sit with you —
 not fix you,
 not rush you,
 just stay.`;
-      }
+  }
 
-      if (mood === "overthinking") {
-        bg = "linear-gradient(120deg, #1b2430, #2a3645)";
-        promise = `I won’t ask you to quiet your thoughts.
+  if (mood === "overthinking") {
+    bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1501785888041-af3ef285b470')";
+    emoji.innerText = "🌀";
+    text.innerText = `I won’t ask you to quiet your thoughts.
 
 I promise to listen —
 even when it takes time
 for the right words to come.`;
-      }
+  }
 
-      if (mood === "calm") {
-        bg = "linear-gradient(120deg, #1d2b24, #2e4036)";
-        promise = `In moments like this,
+  if (mood === "calm") {
+    bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')";
+    emoji.innerText = "🌿";
+    text.innerText = `In moments like this,
 I promise consistency.
 
 Not intensity.
 Not pressure.
 Just something real.`;
-      }
+  }
 
-      if (mood === "distant") {
-        bg = "linear-gradient(120deg, #0e0e13, #1c1c25)";
-        promise = `Even from here,
+  if (mood === "distant") {
+    bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1519681393784-d120267933ba')";
+    emoji.innerText = "🖤";
+    text.innerText = `Even from here,
 I’m not pulling away.
 
 I promise patience —
 without demanding closeness
 before you’re ready.`;
-      }
+  }
+}
 
-      document.body.style.background = bg;
-      text.innerText = promise;
-      box.style.display = "block";
-    }
-  </script>
+function toggleMusic() {
+  if (!musicOn) {
+    music.play();
+    musicOn = true;
+  } else {
+    music.pause();
+    musicOn = false;
+  }
+}
+
+function pulse() {
+  box.style.transform = "scale(1.02)";
+  setTimeout(() => box.style.transform = "scale(1)", 200);
+}
+</script>
 
 </body>
 </html>
